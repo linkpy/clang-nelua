@@ -1,0 +1,1379 @@
+## linklib 'clang'
+global clang = @record{ }
+global CXErrorCode = @enum {
+	Success = 0,
+	Failure = 1,
+	Crashed = 2,
+	InvalidArguments = 3,
+	ASTReadError = 4
+}
+global CXString = @record {
+	data: pointer,
+	private_flags: cuint
+}
+
+global CXStringSet = @record {
+	Strings: *CXString,
+	Count: cuint
+}
+
+global function clang_getCString(a0: CXString): cstring <cimport> end
+global function clang_disposeString(a0: CXString) <cimport> end
+global function clang_disposeStringSet(a0: *CXStringSet) <cimport> end
+global CXIndex = @pointer
+global CXTargetInfoImpl = @record {}
+
+global CXTargetInfo = @*CXTargetInfoImpl
+global CXTranslationUnitImpl = @record {}
+
+global CXTranslationUnit = @*CXTranslationUnitImpl
+global CXClientData = @pointer
+global CXUnsavedFile = @record {
+	Filename: cstring,
+	Contents: cstring,
+	Length: culong
+}
+
+global CXAvailabilityKind = @enum {
+	Available = 0,
+	Deprecated = 1,
+	NotAvailable = 2,
+	NotAccessible = 3
+}
+global CXVersion = @record {
+	Major: cint,
+	Minor: cint,
+	Subminor: cint
+}
+
+global CXCursor_ExceptionSpecificationKind = @enum {
+	None = 0,
+	DynamicNone = 1,
+	Dynamic = 2,
+	MSAny = 3,
+	BasicNoexcept = 4,
+	ComputedNoexcept = 5,
+	Unevaluated = 6,
+	Uninstantiated = 7,
+	Unparsed = 8,
+	NoThrow = 9
+}
+global function clang_createIndex(a0: cint, a1: cint): CXIndex <cimport> end
+global function clang_disposeIndex(a0: CXIndex) <cimport> end
+global CXGlobalOptFlags = @enum {
+	None = 0,
+	ThreadBackgroundPriorityForIndexing = 1,
+	ThreadBackgroundPriorityForEditing = 2,
+	ThreadBackgroundPriorityForAll = 3
+}
+global function clang_CXIndex_setGlobalOptions(a0: CXIndex, a1: cuint) <cimport> end
+global function clang_CXIndex_getGlobalOptions(a0: CXIndex): cuint <cimport> end
+global function clang_CXIndex_setInvocationEmissionPathOption(a0: CXIndex, a1: cstring) <cimport> end
+global CXFile = @pointer
+global function clang_getFileName(a0: CXFile): CXString <cimport> end
+global function clang_getFileTime(a0: CXFile): culong <cimport> end
+global CXFileUniqueID = @record {
+	data: [3]culong
+}
+
+global function clang_getFileUniqueID(a0: CXFile, a1: *CXFileUniqueID): cint <cimport> end
+global function clang_isFileMultipleIncludeGuarded(a0: CXTranslationUnit, a1: CXFile): cuint <cimport> end
+global function clang_getFile(a0: CXTranslationUnit, a1: cstring): CXFile <cimport> end
+global function clang_getFileContents(a0: CXTranslationUnit, a1: CXFile, a2: *csize): cstring <cimport> end
+global function clang_File_isEqual(a0: CXFile, a1: CXFile): cint <cimport> end
+global function clang_File_tryGetRealPathName(a0: CXFile): CXString <cimport> end
+global CXSourceLocation = @record {
+	ptr_data: [2]pointer,
+	int_data: cuint
+}
+
+global CXSourceRange = @record {
+	ptr_data: [2]pointer,
+	begin_int_data: cuint,
+	end_int_data: cuint
+}
+
+global function clang_getNullLocation(): CXSourceLocation <cimport> end
+global function clang_equalLocations(a0: CXSourceLocation, a1: CXSourceLocation): cuint <cimport> end
+global function clang_getLocation(a0: CXTranslationUnit, a1: CXFile, a2: cuint, a3: cuint): CXSourceLocation <cimport> end
+global function clang_getLocationForOffset(a0: CXTranslationUnit, a1: CXFile, a2: cuint): CXSourceLocation <cimport> end
+global function clang_Location_isInSystemHeader(a0: CXSourceLocation): cint <cimport> end
+global function clang_Location_isFromMainFile(a0: CXSourceLocation): cint <cimport> end
+global function clang_getNullRange(): CXSourceRange <cimport> end
+global function clang_getRange(a0: CXSourceLocation, a1: CXSourceLocation): CXSourceRange <cimport> end
+global function clang_equalRanges(a0: CXSourceRange, a1: CXSourceRange): cuint <cimport> end
+global function clang_Range_isNull(a0: CXSourceRange): cint <cimport> end
+global function clang_getExpansionLocation(a0: CXSourceLocation, a1: *CXFile, a2: *cuint, a3: *cuint, a4: *cuint) <cimport> end
+global function clang_getPresumedLocation(a0: CXSourceLocation, a1: *CXString, a2: *cuint, a3: *cuint) <cimport> end
+global function clang_getInstantiationLocation(a0: CXSourceLocation, a1: *CXFile, a2: *cuint, a3: *cuint, a4: *cuint) <cimport> end
+global function clang_getSpellingLocation(a0: CXSourceLocation, a1: *CXFile, a2: *cuint, a3: *cuint, a4: *cuint) <cimport> end
+global function clang_getFileLocation(a0: CXSourceLocation, a1: *CXFile, a2: *cuint, a3: *cuint, a4: *cuint) <cimport> end
+global function clang_getRangeStart(a0: CXSourceRange): CXSourceLocation <cimport> end
+global function clang_getRangeEnd(a0: CXSourceRange): CXSourceLocation <cimport> end
+global CXSourceRangeList = @record {
+	count: cuint,
+	ranges: *CXSourceRange
+}
+
+global function clang_getSkippedRanges(a0: CXTranslationUnit, a1: CXFile): *CXSourceRangeList <cimport> end
+global function clang_getAllSkippedRanges(a0: CXTranslationUnit): *CXSourceRangeList <cimport> end
+global function clang_disposeSourceRangeList(a0: *CXSourceRangeList) <cimport> end
+global CXDiagnosticSeverity = @enum {
+	Ignored = 0,
+	Note = 1,
+	Warning = 2,
+	Error = 3,
+	Fatal = 4
+}
+global CXDiagnostic = @pointer
+global CXDiagnosticSet = @pointer
+global function clang_getNumDiagnosticsInSet(a0: CXDiagnosticSet): cuint <cimport> end
+global function clang_getDiagnosticInSet(a0: CXDiagnosticSet, a1: cuint): CXDiagnostic <cimport> end
+global CXLoadDiag_Error = @enum {
+	None = 0,
+	Unknown = 1,
+	CannotLoad = 2,
+	InvalidFile = 3
+}
+global function clang_loadDiagnostics(a0: cstring, a1: *CXLoadDiag_Error, a2: *CXString): CXDiagnosticSet <cimport> end
+global function clang_disposeDiagnosticSet(a0: CXDiagnosticSet) <cimport> end
+global function clang_getChildDiagnostics(a0: CXDiagnostic): CXDiagnosticSet <cimport> end
+global function clang_getNumDiagnostics(a0: CXTranslationUnit): cuint <cimport> end
+global function clang_getDiagnostic(a0: CXTranslationUnit, a1: cuint): CXDiagnostic <cimport> end
+global function clang_getDiagnosticSetFromTU(a0: CXTranslationUnit): CXDiagnosticSet <cimport> end
+global function clang_disposeDiagnostic(a0: CXDiagnostic) <cimport> end
+global CXDiagnosticDisplayOptions = @enum {
+	DisplaySourceLocation = 1,
+	DisplayColumn = 2,
+	DisplaySourceRanges = 4,
+	DisplayOption = 8,
+	DisplayCategoryId = 16,
+	DisplayCategoryName = 32
+}
+global function clang_formatDiagnostic(a0: CXDiagnostic, a1: cuint): CXString <cimport> end
+global function clang_defaultDiagnosticDisplayOptions(): cuint <cimport> end
+global function clang_getDiagnosticSeverity(a0: CXDiagnostic): CXDiagnosticSeverity <cimport> end
+global function clang_getDiagnosticLocation(a0: CXDiagnostic): CXSourceLocation <cimport> end
+global function clang_getDiagnosticSpelling(a0: CXDiagnostic): CXString <cimport> end
+global function clang_getDiagnosticOption(a0: CXDiagnostic, a1: *CXString): CXString <cimport> end
+global function clang_getDiagnosticCategory(a0: CXDiagnostic): cuint <cimport> end
+global function clang_getDiagnosticCategoryName(a0: cuint): CXString <cimport> end
+global function clang_getDiagnosticCategoryText(a0: CXDiagnostic): CXString <cimport> end
+global function clang_getDiagnosticNumRanges(a0: CXDiagnostic): cuint <cimport> end
+global function clang_getDiagnosticRange(a0: CXDiagnostic, a1: cuint): CXSourceRange <cimport> end
+global function clang_getDiagnosticNumFixIts(a0: CXDiagnostic): cuint <cimport> end
+global function clang_getDiagnosticFixIt(a0: CXDiagnostic, a1: cuint, a2: *CXSourceRange): CXString <cimport> end
+global function clang_getTranslationUnitSpelling(a0: CXTranslationUnit): CXString <cimport> end
+global function clang_createTranslationUnitFromSourceFile(a0: CXIndex, a1: cstring, a2: cint, a3: *cstring, a4: cuint, a5: *CXUnsavedFile): CXTranslationUnit <cimport> end
+global function clang_createTranslationUnit(a0: CXIndex, a1: cstring): CXTranslationUnit <cimport> end
+global function clang_createTranslationUnit2(a0: CXIndex, a1: cstring, a2: *CXTranslationUnit): CXErrorCode <cimport> end
+global CXTranslationUnit_Flags = @enum {
+	None = 0,
+	DetailedPreprocessingRecord = 1,
+	Incomplete = 2,
+	PrecompiledPreamble = 4,
+	CacheCompletionResults = 8,
+	ForSerialization = 16,
+	CXXChainedPCH = 32,
+	SkipFunctionBodies = 64,
+	IncludeBriefCommentsInCodeCompletion = 128,
+	CreatePreambleOnFirstParse = 256,
+	KeepGoing = 512,
+	SingleFileParse = 1024,
+	LimitSkipFunctionBodiesToPreamble = 2048,
+	IncludeAttributedTypes = 4096,
+	VisitImplicitAttributes = 8192,
+	IgnoreNonErrorsFromIncludedFiles = 16384,
+	RetainExcludedConditionalBlocks = 32768
+}
+global function clang_defaultEditingTranslationUnitOptions(): cuint <cimport> end
+global function clang_parseTranslationUnit(a0: CXIndex, a1: cstring, a2: *cstring, a3: cint, a4: *CXUnsavedFile, a5: cuint, a6: cuint): CXTranslationUnit <cimport> end
+global function clang_parseTranslationUnit2(a0: CXIndex, a1: cstring, a2: *cstring, a3: cint, a4: *CXUnsavedFile, a5: cuint, a6: cuint, a7: *CXTranslationUnit): CXErrorCode <cimport> end
+global function clang_parseTranslationUnit2FullArgv(a0: CXIndex, a1: cstring, a2: *cstring, a3: cint, a4: *CXUnsavedFile, a5: cuint, a6: cuint, a7: *CXTranslationUnit): CXErrorCode <cimport> end
+global CXSaveTranslationUnit_Flags = @enum {
+	None = 0
+}
+global function clang_defaultSaveOptions(a0: CXTranslationUnit): cuint <cimport> end
+global CXSaveError = @enum {
+	None = 0,
+	Unknown = 1,
+	TranslationErrors = 2,
+	InvalidTU = 3
+}
+global function clang_saveTranslationUnit(a0: CXTranslationUnit, a1: cstring, a2: cuint): cint <cimport> end
+global function clang_suspendTranslationUnit(a0: CXTranslationUnit): cuint <cimport> end
+global function clang_disposeTranslationUnit(a0: CXTranslationUnit) <cimport> end
+global CXReparse_Flags = @enum {
+	None = 0
+}
+global function clang_defaultReparseOptions(a0: CXTranslationUnit): cuint <cimport> end
+global function clang_reparseTranslationUnit(a0: CXTranslationUnit, a1: cuint, a2: *CXUnsavedFile, a3: cuint): cint <cimport> end
+global CXTUResourceUsageKind = @enum {
+	AST = 1,
+	Identifiers = 2,
+	Selectors = 3,
+	GlobalCompletionResults = 4,
+	SourceManagerContentCache = 5,
+	AST_SideTables = 6,
+	SourceManager_Membuffer_Malloc = 7,
+	SourceManager_Membuffer_MMap = 8,
+	ExternalASTSource_Membuffer_Malloc = 9,
+	ExternalASTSource_Membuffer_MMap = 10,
+	Preprocessor = 11,
+	PreprocessingRecord = 12,
+	SourceManager_DataStructures = 13,
+	Preprocessor_HeaderSearch = 14,
+	MEMORY_IN_BYTES_BEGIN = 1,
+	MEMORY_IN_BYTES_END = 14,
+	First = 1,
+	Last = 14
+}
+global function clang_getTUResourceUsageName(a0: CXTUResourceUsageKind): cstring <cimport> end
+global CXTUResourceUsageEntry = @record {
+	kind: CXTUResourceUsageKind,
+	amount: culong
+}
+
+global CXTUResourceUsage = @record {
+	data: pointer,
+	numEntries: cuint,
+	entries: *CXTUResourceUsageEntry
+}
+
+global function clang_getCXTUResourceUsage(a0: CXTranslationUnit): CXTUResourceUsage <cimport> end
+global function clang_disposeCXTUResourceUsage(a0: CXTUResourceUsage) <cimport> end
+global function clang_getTranslationUnitTargetInfo(a0: CXTranslationUnit): CXTargetInfo <cimport> end
+global function clang_TargetInfo_dispose(a0: CXTargetInfo) <cimport> end
+global function clang_TargetInfo_getTriple(a0: CXTargetInfo): CXString <cimport> end
+global function clang_TargetInfo_getPointerWidth(a0: CXTargetInfo): cint <cimport> end
+global CXCursorKind = @enum {
+	UnexposedDecl = 1,
+	StructDecl = 2,
+	UnionDecl = 3,
+	ClassDecl = 4,
+	EnumDecl = 5,
+	FieldDecl = 6,
+	EnumConstantDecl = 7,
+	FunctionDecl = 8,
+	VarDecl = 9,
+	ParmDecl = 10,
+	ObjCInterfaceDecl = 11,
+	ObjCCategoryDecl = 12,
+	ObjCProtocolDecl = 13,
+	ObjCPropertyDecl = 14,
+	ObjCIvarDecl = 15,
+	ObjCInstanceMethodDecl = 16,
+	ObjCClassMethodDecl = 17,
+	ObjCImplementationDecl = 18,
+	ObjCCategoryImplDecl = 19,
+	TypedefDecl = 20,
+	CXXMethod = 21,
+	Namespace = 22,
+	LinkageSpec = 23,
+	Constructor = 24,
+	Destructor = 25,
+	ConversionFunction = 26,
+	TemplateTypeParameter = 27,
+	NonTypeTemplateParameter = 28,
+	TemplateTemplateParameter = 29,
+	FunctionTemplate = 30,
+	ClassTemplate = 31,
+	ClassTemplatePartialSpecialization = 32,
+	NamespaceAlias = 33,
+	UsingDirective = 34,
+	UsingDeclaration = 35,
+	TypeAliasDecl = 36,
+	ObjCSynthesizeDecl = 37,
+	ObjCDynamicDecl = 38,
+	CXXAccessSpecifier = 39,
+	FirstDecl = 1,
+	LastDecl = 39,
+	FirstRef = 40,
+	ObjCSuperClassRef = 40,
+	ObjCProtocolRef = 41,
+	ObjCClassRef = 42,
+	TypeRef = 43,
+	CXXBaseSpecifier = 44,
+	TemplateRef = 45,
+	NamespaceRef = 46,
+	MemberRef = 47,
+	LabelRef = 48,
+	OverloadedDeclRef = 49,
+	VariableRef = 50,
+	LastRef = 50,
+	FirstInvalid = 70,
+	InvalidFile = 70,
+	NoDeclFound = 71,
+	NotImplemented = 72,
+	InvalidCode = 73,
+	LastInvalid = 73,
+	FirstExpr = 100,
+	UnexposedExpr = 100,
+	DeclRefExpr = 101,
+	MemberRefExpr = 102,
+	CallExpr = 103,
+	ObjCMessageExpr = 104,
+	BlockExpr = 105,
+	IntegerLiteral = 106,
+	FloatingLiteral = 107,
+	ImaginaryLiteral = 108,
+	StringLiteral = 109,
+	CharacterLiteral = 110,
+	ParenExpr = 111,
+	UnaryOperator = 112,
+	ArraySubscriptExpr = 113,
+	BinaryOperator = 114,
+	CompoundAssignOperator = 115,
+	ConditionalOperator = 116,
+	CStyleCastExpr = 117,
+	CompoundLiteralExpr = 118,
+	InitListExpr = 119,
+	AddrLabelExpr = 120,
+	StmtExpr = 121,
+	GenericSelectionExpr = 122,
+	GNUNullExpr = 123,
+	CXXStaticCastExpr = 124,
+	CXXDynamicCastExpr = 125,
+	CXXReinterpretCastExpr = 126,
+	CXXConstCastExpr = 127,
+	CXXFunctionalCastExpr = 128,
+	CXXTypeidExpr = 129,
+	CXXBoolLiteralExpr = 130,
+	CXXNullPtrLiteralExpr = 131,
+	CXXThisExpr = 132,
+	CXXThrowExpr = 133,
+	CXXNewExpr = 134,
+	CXXDeleteExpr = 135,
+	UnaryExpr = 136,
+	ObjCStringLiteral = 137,
+	ObjCEncodeExpr = 138,
+	ObjCSelectorExpr = 139,
+	ObjCProtocolExpr = 140,
+	ObjCBridgedCastExpr = 141,
+	PackExpansionExpr = 142,
+	SizeOfPackExpr = 143,
+	LambdaExpr = 144,
+	ObjCBoolLiteralExpr = 145,
+	ObjCSelfExpr = 146,
+	OMPArraySectionExpr = 147,
+	ObjCAvailabilityCheckExpr = 148,
+	FixedPointLiteral = 149,
+	LastExpr = 149,
+	FirstStmt = 200,
+	UnexposedStmt = 200,
+	LabelStmt = 201,
+	CompoundStmt = 202,
+	CaseStmt = 203,
+	DefaultStmt = 204,
+	IfStmt = 205,
+	SwitchStmt = 206,
+	WhileStmt = 207,
+	DoStmt = 208,
+	ForStmt = 209,
+	GotoStmt = 210,
+	IndirectGotoStmt = 211,
+	ContinueStmt = 212,
+	BreakStmt = 213,
+	ReturnStmt = 214,
+	GCCAsmStmt = 215,
+	AsmStmt = 215,
+	ObjCAtTryStmt = 216,
+	ObjCAtCatchStmt = 217,
+	ObjCAtFinallyStmt = 218,
+	ObjCAtThrowStmt = 219,
+	ObjCAtSynchronizedStmt = 220,
+	ObjCAutoreleasePoolStmt = 221,
+	ObjCForCollectionStmt = 222,
+	CXXCatchStmt = 223,
+	CXXTryStmt = 224,
+	CXXForRangeStmt = 225,
+	SEHTryStmt = 226,
+	SEHExceptStmt = 227,
+	SEHFinallyStmt = 228,
+	MSAsmStmt = 229,
+	NullStmt = 230,
+	DeclStmt = 231,
+	OMPParallelDirective = 232,
+	OMPSimdDirective = 233,
+	OMPForDirective = 234,
+	OMPSectionsDirective = 235,
+	OMPSectionDirective = 236,
+	OMPSingleDirective = 237,
+	OMPParallelForDirective = 238,
+	OMPParallelSectionsDirective = 239,
+	OMPTaskDirective = 240,
+	OMPMasterDirective = 241,
+	OMPCriticalDirective = 242,
+	OMPTaskyieldDirective = 243,
+	OMPBarrierDirective = 244,
+	OMPTaskwaitDirective = 245,
+	OMPFlushDirective = 246,
+	SEHLeaveStmt = 247,
+	OMPOrderedDirective = 248,
+	OMPAtomicDirective = 249,
+	OMPForSimdDirective = 250,
+	OMPParallelForSimdDirective = 251,
+	OMPTargetDirective = 252,
+	OMPTeamsDirective = 253,
+	OMPTaskgroupDirective = 254,
+	OMPCancellationPointDirective = 255,
+	OMPCancelDirective = 256,
+	OMPTargetDataDirective = 257,
+	OMPTaskLoopDirective = 258,
+	OMPTaskLoopSimdDirective = 259,
+	OMPDistributeDirective = 260,
+	OMPTargetEnterDataDirective = 261,
+	OMPTargetExitDataDirective = 262,
+	OMPTargetParallelDirective = 263,
+	OMPTargetParallelForDirective = 264,
+	OMPTargetUpdateDirective = 265,
+	OMPDistributeParallelForDirective = 266,
+	OMPDistributeParallelForSimdDirective = 267,
+	OMPDistributeSimdDirective = 268,
+	OMPTargetParallelForSimdDirective = 269,
+	OMPTargetSimdDirective = 270,
+	OMPTeamsDistributeDirective = 271,
+	OMPTeamsDistributeSimdDirective = 272,
+	OMPTeamsDistributeParallelForSimdDirective = 273,
+	OMPTeamsDistributeParallelForDirective = 274,
+	OMPTargetTeamsDirective = 275,
+	OMPTargetTeamsDistributeDirective = 276,
+	OMPTargetTeamsDistributeParallelForDirective = 277,
+	OMPTargetTeamsDistributeParallelForSimdDirective = 278,
+	OMPTargetTeamsDistributeSimdDirective = 279,
+	BuiltinBitCastExpr = 280,
+	OMPMasterTaskLoopDirective = 281,
+	OMPParallelMasterTaskLoopDirective = 282,
+	OMPMasterTaskLoopSimdDirective = 283,
+	OMPParallelMasterTaskLoopSimdDirective = 284,
+	OMPParallelMasterDirective = 285,
+	LastStmt = 285,
+	TranslationUnit = 300,
+	FirstAttr = 400,
+	UnexposedAttr = 400,
+	IBActionAttr = 401,
+	IBOutletAttr = 402,
+	IBOutletCollectionAttr = 403,
+	CXXFinalAttr = 404,
+	CXXOverrideAttr = 405,
+	AnnotateAttr = 406,
+	AsmLabelAttr = 407,
+	PackedAttr = 408,
+	PureAttr = 409,
+	ConstAttr = 410,
+	NoDuplicateAttr = 411,
+	CUDAConstantAttr = 412,
+	CUDADeviceAttr = 413,
+	CUDAGlobalAttr = 414,
+	CUDAHostAttr = 415,
+	CUDASharedAttr = 416,
+	VisibilityAttr = 417,
+	DLLExport = 418,
+	DLLImport = 419,
+	NSReturnsRetained = 420,
+	NSReturnsNotRetained = 421,
+	NSReturnsAutoreleased = 422,
+	NSConsumesSelf = 423,
+	NSConsumed = 424,
+	ObjCException = 425,
+	ObjCNSObject = 426,
+	ObjCIndependentClass = 427,
+	ObjCPreciseLifetime = 428,
+	ObjCReturnsInnerPointer = 429,
+	ObjCRequiresSuper = 430,
+	ObjCRootClass = 431,
+	ObjCSubclassingRestricted = 432,
+	ObjCExplicitProtocolImpl = 433,
+	ObjCDesignatedInitializer = 434,
+	ObjCRuntimeVisible = 435,
+	ObjCBoxable = 436,
+	FlagEnum = 437,
+	ConvergentAttr = 438,
+	WarnUnusedAttr = 439,
+	WarnUnusedResultAttr = 440,
+	AlignedAttr = 441,
+	LastAttr = 441,
+	PreprocessingDirective = 500,
+	MacroDefinition = 501,
+	MacroExpansion = 502,
+	MacroInstantiation = 502,
+	InclusionDirective = 503,
+	FirstPreprocessing = 500,
+	LastPreprocessing = 503,
+	ModuleImportDecl = 600,
+	TypeAliasTemplateDecl = 601,
+	StaticAssert = 602,
+	FriendDecl = 603,
+	FirstExtraDecl = 600,
+	LastExtraDecl = 603,
+	OverloadCandidate = 700
+}
+global CXCursor = @record {
+	kind: CXCursorKind,
+	xdata: cint,
+	data: [3]pointer
+}
+
+global function clang_getNullCursor(): CXCursor <cimport> end
+global function clang_getTranslationUnitCursor(a0: CXTranslationUnit): CXCursor <cimport> end
+global function clang_equalCursors(a0: CXCursor, a1: CXCursor): cuint <cimport> end
+global function clang_Cursor_isNull(a0: CXCursor): cint <cimport> end
+global function clang_hashCursor(a0: CXCursor): cuint <cimport> end
+global function clang_getCursorKind(a0: CXCursor): CXCursorKind <cimport> end
+global function clang_isDeclaration(a0: CXCursorKind): cuint <cimport> end
+global function clang_isInvalidDeclaration(a0: CXCursor): cuint <cimport> end
+global function clang_isReference(a0: CXCursorKind): cuint <cimport> end
+global function clang_isExpression(a0: CXCursorKind): cuint <cimport> end
+global function clang_isStatement(a0: CXCursorKind): cuint <cimport> end
+global function clang_isAttribute(a0: CXCursorKind): cuint <cimport> end
+global function clang_Cursor_hasAttrs(a0: CXCursor): cuint <cimport> end
+global function clang_isInvalid(a0: CXCursorKind): cuint <cimport> end
+global function clang_isTranslationUnit(a0: CXCursorKind): cuint <cimport> end
+global function clang_isPreprocessing(a0: CXCursorKind): cuint <cimport> end
+global function clang_isUnexposed(a0: CXCursorKind): cuint <cimport> end
+global CXLinkageKind = @enum {
+	Invalid = 0,
+	NoLinkage = 1,
+	Internal = 2,
+	UniqueExternal = 3,
+	External = 4
+}
+global function clang_getCursorLinkage(a0: CXCursor): CXLinkageKind <cimport> end
+global CXVisibilityKind = @enum {
+	Invalid = 0,
+	Hidden = 1,
+	Protected = 2,
+	Default = 3
+}
+global function clang_getCursorVisibility(a0: CXCursor): CXVisibilityKind <cimport> end
+global function clang_getCursorAvailability(a0: CXCursor): CXAvailabilityKind <cimport> end
+global CXPlatformAvailability = @record {
+	Platform: CXString,
+	Introduced: CXVersion,
+	Deprecated: CXVersion,
+	Obsoleted: CXVersion,
+	Unavailable: cint,
+	Message: CXString
+}
+
+global function clang_getCursorPlatformAvailability(a0: CXCursor, a1: *cint, a2: *CXString, a3: *cint, a4: *CXString, a5: *CXPlatformAvailability, a6: cint): cint <cimport> end
+global function clang_disposeCXPlatformAvailability(a0: *CXPlatformAvailability) <cimport> end
+global CXLanguageKind = @enum {
+	Invalid = 0,
+	C = 1,
+	ObjC = 2,
+	CPlusPlus = 3
+}
+global function clang_getCursorLanguage(a0: CXCursor): CXLanguageKind <cimport> end
+global CXTLSKind = @enum {
+	None = 0,
+	Dynamic = 1,
+	Static = 2
+}
+global function clang_getCursorTLSKind(a0: CXCursor): CXTLSKind <cimport> end
+global function clang_Cursor_getTranslationUnit(a0: CXCursor): CXTranslationUnit <cimport> end
+global CXCursorSetImpl = @record {}
+
+global CXCursorSet = @*CXCursorSetImpl
+global function clang_createCXCursorSet(): CXCursorSet <cimport> end
+global function clang_disposeCXCursorSet(a0: CXCursorSet) <cimport> end
+global function clang_CXCursorSet_contains(a0: CXCursorSet, a1: CXCursor): cuint <cimport> end
+global function clang_CXCursorSet_insert(a0: CXCursorSet, a1: CXCursor): cuint <cimport> end
+global function clang_getCursorSemanticParent(a0: CXCursor): CXCursor <cimport> end
+global function clang_getCursorLexicalParent(a0: CXCursor): CXCursor <cimport> end
+global function clang_getOverriddenCursors(a0: CXCursor, a1: **CXCursor, a2: *cuint) <cimport> end
+global function clang_disposeOverriddenCursors(a0: *CXCursor) <cimport> end
+global function clang_getIncludedFile(a0: CXCursor): CXFile <cimport> end
+global function clang_getCursor(a0: CXTranslationUnit, a1: CXSourceLocation): CXCursor <cimport> end
+global function clang_getCursorLocation(a0: CXCursor): CXSourceLocation <cimport> end
+global function clang_getCursorExtent(a0: CXCursor): CXSourceRange <cimport> end
+global CXTypeKind = @enum {
+	Invalid = 0,
+	Unexposed = 1,
+	Void = 2,
+	Bool = 3,
+	Char_U = 4,
+	UChar = 5,
+	Char16 = 6,
+	Char32 = 7,
+	UShort = 8,
+	UInt = 9,
+	ULong = 10,
+	ULongLong = 11,
+	UInt128 = 12,
+	Char_S = 13,
+	SChar = 14,
+	WChar = 15,
+	Short = 16,
+	Int = 17,
+	Long = 18,
+	LongLong = 19,
+	Int128 = 20,
+	Float = 21,
+	Double = 22,
+	LongDouble = 23,
+	NullPtr = 24,
+	Overload = 25,
+	Dependent = 26,
+	ObjCId = 27,
+	ObjCClass = 28,
+	ObjCSel = 29,
+	Float128 = 30,
+	Half = 31,
+	Float16 = 32,
+	ShortAccum = 33,
+	Accum = 34,
+	LongAccum = 35,
+	UShortAccum = 36,
+	UAccum = 37,
+	ULongAccum = 38,
+	FirstBuiltin = 2,
+	LastBuiltin = 38,
+	Complex = 100,
+	Pointer = 101,
+	BlockPointer = 102,
+	LValueReference = 103,
+	RValueReference = 104,
+	Record = 105,
+	Enum = 106,
+	Typedef = 107,
+	ObjCInterface = 108,
+	ObjCObjectPointer = 109,
+	FunctionNoProto = 110,
+	FunctionProto = 111,
+	ConstantArray = 112,
+	Vector = 113,
+	IncompleteArray = 114,
+	VariableArray = 115,
+	DependentSizedArray = 116,
+	MemberPointer = 117,
+	Auto = 118,
+	Elaborated = 119,
+	Pipe = 120,
+	OCLImage1dRO = 121,
+	OCLImage1dArrayRO = 122,
+	OCLImage1dBufferRO = 123,
+	OCLImage2dRO = 124,
+	OCLImage2dArrayRO = 125,
+	OCLImage2dDepthRO = 126,
+	OCLImage2dArrayDepthRO = 127,
+	OCLImage2dMSAARO = 128,
+	OCLImage2dArrayMSAARO = 129,
+	OCLImage2dMSAADepthRO = 130,
+	OCLImage2dArrayMSAADepthRO = 131,
+	OCLImage3dRO = 132,
+	OCLImage1dWO = 133,
+	OCLImage1dArrayWO = 134,
+	OCLImage1dBufferWO = 135,
+	OCLImage2dWO = 136,
+	OCLImage2dArrayWO = 137,
+	OCLImage2dDepthWO = 138,
+	OCLImage2dArrayDepthWO = 139,
+	OCLImage2dMSAAWO = 140,
+	OCLImage2dArrayMSAAWO = 141,
+	OCLImage2dMSAADepthWO = 142,
+	OCLImage2dArrayMSAADepthWO = 143,
+	OCLImage3dWO = 144,
+	OCLImage1dRW = 145,
+	OCLImage1dArrayRW = 146,
+	OCLImage1dBufferRW = 147,
+	OCLImage2dRW = 148,
+	OCLImage2dArrayRW = 149,
+	OCLImage2dDepthRW = 150,
+	OCLImage2dArrayDepthRW = 151,
+	OCLImage2dMSAARW = 152,
+	OCLImage2dArrayMSAARW = 153,
+	OCLImage2dMSAADepthRW = 154,
+	OCLImage2dArrayMSAADepthRW = 155,
+	OCLImage3dRW = 156,
+	OCLSampler = 157,
+	OCLEvent = 158,
+	OCLQueue = 159,
+	OCLReserveID = 160,
+	ObjCObject = 161,
+	ObjCTypeParam = 162,
+	Attributed = 163,
+	OCLIntelSubgroupAVCMcePayload = 164,
+	OCLIntelSubgroupAVCImePayload = 165,
+	OCLIntelSubgroupAVCRefPayload = 166,
+	OCLIntelSubgroupAVCSicPayload = 167,
+	OCLIntelSubgroupAVCMceResult = 168,
+	OCLIntelSubgroupAVCImeResult = 169,
+	OCLIntelSubgroupAVCRefResult = 170,
+	OCLIntelSubgroupAVCSicResult = 171,
+	OCLIntelSubgroupAVCImeResultSingleRefStreamout = 172,
+	OCLIntelSubgroupAVCImeResultDualRefStreamout = 173,
+	OCLIntelSubgroupAVCImeSingleRefStreamin = 174,
+	OCLIntelSubgroupAVCImeDualRefStreamin = 175,
+	ExtVector = 176
+}
+global CXCallingConv = @enum {
+	Default = 0,
+	C = 1,
+	X86StdCall = 2,
+	X86FastCall = 3,
+	X86ThisCall = 4,
+	X86Pascal = 5,
+	AAPCS = 6,
+	AAPCS_VFP = 7,
+	X86RegCall = 8,
+	IntelOclBicc = 9,
+	Win64 = 10,
+	X86_64Win64 = 10,
+	X86_64SysV = 11,
+	X86VectorCall = 12,
+	Swift = 13,
+	PreserveMost = 14,
+	PreserveAll = 15,
+	AArch64VectorCall = 16,
+	Invalid = 100,
+	Unexposed = 200
+}
+global CXType = @record {
+	kind: CXTypeKind,
+	data: [2]pointer
+}
+
+global function clang_getCursorType(a0: CXCursor): CXType <cimport> end
+global function clang_getTypeSpelling(a0: CXType): CXString <cimport> end
+global function clang_getTypedefDeclUnderlyingType(a0: CXCursor): CXType <cimport> end
+global function clang_getEnumDeclIntegerType(a0: CXCursor): CXType <cimport> end
+global function clang_getEnumConstantDeclValue(a0: CXCursor): clonglong <cimport> end
+global function clang_getEnumConstantDeclUnsignedValue(a0: CXCursor): culong <cimport> end
+global function clang_getFieldDeclBitWidth(a0: CXCursor): cint <cimport> end
+global function clang_Cursor_getNumArguments(a0: CXCursor): cint <cimport> end
+global function clang_Cursor_getArgument(a0: CXCursor, a1: cuint): CXCursor <cimport> end
+global CXTemplateArgumentKind = @enum {
+	Null = 0,
+	Type = 1,
+	Declaration = 2,
+	NullPtr = 3,
+	Integral = 4,
+	Template = 5,
+	TemplateExpansion = 6,
+	Expression = 7,
+	Pack = 8,
+	Invalid = 9
+}
+global function clang_Cursor_getNumTemplateArguments(a0: CXCursor): cint <cimport> end
+global function clang_Cursor_getTemplateArgumentKind(a0: CXCursor, a1: cuint): CXTemplateArgumentKind <cimport> end
+global function clang_Cursor_getTemplateArgumentType(a0: CXCursor, a1: cuint): CXType <cimport> end
+global function clang_Cursor_getTemplateArgumentValue(a0: CXCursor, a1: cuint): clonglong <cimport> end
+global function clang_Cursor_getTemplateArgumentUnsignedValue(a0: CXCursor, a1: cuint): culong <cimport> end
+global function clang_equalTypes(a0: CXType, a1: CXType): cuint <cimport> end
+global function clang_getCanonicalType(a0: CXType): CXType <cimport> end
+global function clang_isConstQualifiedType(a0: CXType): cuint <cimport> end
+global function clang_Cursor_isMacroFunctionLike(a0: CXCursor): cuint <cimport> end
+global function clang_Cursor_isMacroBuiltin(a0: CXCursor): cuint <cimport> end
+global function clang_Cursor_isFunctionInlined(a0: CXCursor): cuint <cimport> end
+global function clang_isVolatileQualifiedType(a0: CXType): cuint <cimport> end
+global function clang_isRestrictQualifiedType(a0: CXType): cuint <cimport> end
+global function clang_getAddressSpace(a0: CXType): cuint <cimport> end
+global function clang_getTypedefName(a0: CXType): CXString <cimport> end
+global function clang_getPointeeType(a0: CXType): CXType <cimport> end
+global function clang_getTypeDeclaration(a0: CXType): CXCursor <cimport> end
+global function clang_getDeclObjCTypeEncoding(a0: CXCursor): CXString <cimport> end
+global function clang_Type_getObjCEncoding(a0: CXType): CXString <cimport> end
+global function clang_getTypeKindSpelling(a0: CXTypeKind): CXString <cimport> end
+global function clang_getFunctionTypeCallingConv(a0: CXType): CXCallingConv <cimport> end
+global function clang_getResultType(a0: CXType): CXType <cimport> end
+global function clang_getExceptionSpecificationType(a0: CXType): cint <cimport> end
+global function clang_getNumArgTypes(a0: CXType): cint <cimport> end
+global function clang_getArgType(a0: CXType, a1: cuint): CXType <cimport> end
+global function clang_Type_getObjCObjectBaseType(a0: CXType): CXType <cimport> end
+global function clang_Type_getNumObjCProtocolRefs(a0: CXType): cuint <cimport> end
+global function clang_Type_getObjCProtocolDecl(a0: CXType, a1: cuint): CXCursor <cimport> end
+global function clang_Type_getNumObjCTypeArgs(a0: CXType): cuint <cimport> end
+global function clang_Type_getObjCTypeArg(a0: CXType, a1: cuint): CXType <cimport> end
+global function clang_isFunctionTypeVariadic(a0: CXType): cuint <cimport> end
+global function clang_getCursorResultType(a0: CXCursor): CXType <cimport> end
+global function clang_getCursorExceptionSpecificationType(a0: CXCursor): cint <cimport> end
+global function clang_isPODType(a0: CXType): cuint <cimport> end
+global function clang_getElementType(a0: CXType): CXType <cimport> end
+global function clang_getNumElements(a0: CXType): clonglong <cimport> end
+global function clang_getArrayElementType(a0: CXType): CXType <cimport> end
+global function clang_getArraySize(a0: CXType): clonglong <cimport> end
+global function clang_Type_getNamedType(a0: CXType): CXType <cimport> end
+global function clang_Type_isTransparentTagTypedef(a0: CXType): cuint <cimport> end
+global CXTypeNullabilityKind = @enum {
+	NonNull = 0,
+	Nullable = 1,
+	Unspecified = 2,
+	Invalid = 3
+}
+global function clang_Type_getNullability(a0: CXType): CXTypeNullabilityKind <cimport> end
+global CXTypeLayoutError = @enum {
+	Invalid = -1,
+	Incomplete = -2,
+	Dependent = -3,
+	NotConstantSize = -4,
+	InvalidFieldName = -5,
+	Undeduced = -6
+}
+global function clang_Type_getAlignOf(a0: CXType): clonglong <cimport> end
+global function clang_Type_getClassType(a0: CXType): CXType <cimport> end
+global function clang_Type_getSizeOf(a0: CXType): clonglong <cimport> end
+global function clang_Type_getOffsetOf(a0: CXType, a1: cstring): clonglong <cimport> end
+global function clang_Type_getModifiedType(a0: CXType): CXType <cimport> end
+global function clang_Cursor_getOffsetOfField(a0: CXCursor): clonglong <cimport> end
+global function clang_Cursor_isAnonymous(a0: CXCursor): cuint <cimport> end
+global function clang_Cursor_isAnonymousRecordDecl(a0: CXCursor): cuint <cimport> end
+global function clang_Cursor_isInlineNamespace(a0: CXCursor): cuint <cimport> end
+global CXRefQualifierKind = @enum {
+	None = 0,
+	LValue = 1,
+	RValue = 2
+}
+global function clang_Type_getNumTemplateArguments(a0: CXType): cint <cimport> end
+global function clang_Type_getTemplateArgumentAsType(a0: CXType, a1: cuint): CXType <cimport> end
+global function clang_Type_getCXXRefQualifier(a0: CXType): CXRefQualifierKind <cimport> end
+global function clang_Cursor_isBitField(a0: CXCursor): cuint <cimport> end
+global function clang_isVirtualBase(a0: CXCursor): cuint <cimport> end
+global CX_CXXAccessSpecifier = @enum {
+	CXXInvalidAccessSpecifier = 0,
+	CXXPublic = 1,
+	CXXProtected = 2,
+	CXXPrivate = 3
+}
+global function clang_getCXXAccessSpecifier(a0: CXCursor): CX_CXXAccessSpecifier <cimport> end
+global CX_StorageClass = @enum {
+	SC_Invalid = 0,
+	SC_None = 1,
+	SC_Extern = 2,
+	SC_Static = 3,
+	SC_PrivateExtern = 4,
+	SC_OpenCLWorkGroupLocal = 5,
+	SC_Auto = 6,
+	SC_Register = 7
+}
+global function clang_Cursor_getStorageClass(a0: CXCursor): CX_StorageClass <cimport> end
+global function clang_getNumOverloadedDecls(a0: CXCursor): cuint <cimport> end
+global function clang_getOverloadedDecl(a0: CXCursor, a1: cuint): CXCursor <cimport> end
+global function clang_getIBOutletCollectionType(a0: CXCursor): CXType <cimport> end
+global CXChildVisitResult = @enum {
+	Break = 0,
+	Continue = 1,
+	Recurse = 2
+}
+global CXCursorVisitor = @function(a0: CXCursor, a1: CXCursor, a2: CXClientData): CXChildVisitResult
+global function clang_visitChildren(a0: CXCursor, a1: CXCursorVisitor, a2: CXClientData): cuint <cimport> end
+global function clang_getCursorUSR(a0: CXCursor): CXString <cimport> end
+global function clang_constructUSR_ObjCClass(a0: cstring): CXString <cimport> end
+global function clang_constructUSR_ObjCCategory(a0: cstring, a1: cstring): CXString <cimport> end
+global function clang_constructUSR_ObjCProtocol(a0: cstring): CXString <cimport> end
+global function clang_constructUSR_ObjCIvar(a0: cstring, a1: CXString): CXString <cimport> end
+global function clang_constructUSR_ObjCMethod(a0: cstring, a1: cuint, a2: CXString): CXString <cimport> end
+global function clang_constructUSR_ObjCProperty(a0: cstring, a1: CXString): CXString <cimport> end
+global function clang_getCursorSpelling(a0: CXCursor): CXString <cimport> end
+global function clang_Cursor_getSpellingNameRange(a0: CXCursor, a1: cuint, a2: cuint): CXSourceRange <cimport> end
+global CXPrintingPolicy = @pointer
+global CXPrintingPolicyProperty = @enum {
+	Indentation = 0,
+	SuppressSpecifiers = 1,
+	SuppressTagKeyword = 2,
+	IncludeTagDefinition = 3,
+	SuppressScope = 4,
+	SuppressUnwrittenScope = 5,
+	SuppressInitializers = 6,
+	ConstantArraySizeAsWritten = 7,
+	AnonymousTagLocations = 8,
+	SuppressStrongLifetime = 9,
+	SuppressLifetimeQualifiers = 10,
+	SuppressTemplateArgsInCXXConstructors = 11,
+	Bool = 12,
+	Restrict = 13,
+	Alignof = 14,
+	UnderscoreAlignof = 15,
+	UseVoidForZeroParams = 16,
+	TerseOutput = 17,
+	PolishForDeclaration = 18,
+	Half = 19,
+	MSWChar = 20,
+	IncludeNewlines = 21,
+	MSVCFormatting = 22,
+	ConstantsAsWritten = 23,
+	SuppressImplicitBase = 24,
+	FullyQualifiedName = 25,
+	LastProperty = 25
+}
+global function clang_PrintingPolicy_getProperty(a0: CXPrintingPolicy, a1: CXPrintingPolicyProperty): cuint <cimport> end
+global function clang_PrintingPolicy_setProperty(a0: CXPrintingPolicy, a1: CXPrintingPolicyProperty, a2: cuint) <cimport> end
+global function clang_getCursorPrintingPolicy(a0: CXCursor): CXPrintingPolicy <cimport> end
+global function clang_PrintingPolicy_dispose(a0: CXPrintingPolicy) <cimport> end
+global function clang_getCursorPrettyPrinted(a0: CXCursor, a1: CXPrintingPolicy): CXString <cimport> end
+global function clang_getCursorDisplayName(a0: CXCursor): CXString <cimport> end
+global function clang_getCursorReferenced(a0: CXCursor): CXCursor <cimport> end
+global function clang_getCursorDefinition(a0: CXCursor): CXCursor <cimport> end
+global function clang_isCursorDefinition(a0: CXCursor): cuint <cimport> end
+global function clang_getCanonicalCursor(a0: CXCursor): CXCursor <cimport> end
+global function clang_Cursor_getObjCSelectorIndex(a0: CXCursor): cint <cimport> end
+global function clang_Cursor_isDynamicCall(a0: CXCursor): cint <cimport> end
+global function clang_Cursor_getReceiverType(a0: CXCursor): CXType <cimport> end
+global CXObjCPropertyAttrKind = @enum {
+	noattr = 0,
+	readonly = 1,
+	getter = 2,
+	assign = 4,
+	readwrite = 8,
+	retain = 16,
+	copy = 32,
+	nonatomic = 64,
+	setter = 128,
+	atomic = 256,
+	weak = 512,
+	strong = 1024,
+	unsafe_unretained = 2048,
+	class = 4096
+}
+global function clang_Cursor_getObjCPropertyAttributes(a0: CXCursor, a1: cuint): cuint <cimport> end
+global function clang_Cursor_getObjCPropertyGetterName(a0: CXCursor): CXString <cimport> end
+global function clang_Cursor_getObjCPropertySetterName(a0: CXCursor): CXString <cimport> end
+global CXObjCDeclQualifierKind = @enum {
+	None = 0,
+	In = 1,
+	Inout = 2,
+	Out = 4,
+	Bycopy = 8,
+	Byref = 16,
+	Oneway = 32
+}
+global function clang_Cursor_getObjCDeclQualifiers(a0: CXCursor): cuint <cimport> end
+global function clang_Cursor_isObjCOptional(a0: CXCursor): cuint <cimport> end
+global function clang_Cursor_isVariadic(a0: CXCursor): cuint <cimport> end
+global function clang_Cursor_isExternalSymbol(a0: CXCursor, a1: *CXString, a2: *CXString, a3: *cuint): cuint <cimport> end
+global function clang_Cursor_getCommentRange(a0: CXCursor): CXSourceRange <cimport> end
+global function clang_Cursor_getRawCommentText(a0: CXCursor): CXString <cimport> end
+global function clang_Cursor_getBriefCommentText(a0: CXCursor): CXString <cimport> end
+global function clang_Cursor_getMangling(a0: CXCursor): CXString <cimport> end
+global function clang_Cursor_getCXXManglings(a0: CXCursor): *CXStringSet <cimport> end
+global function clang_Cursor_getObjCManglings(a0: CXCursor): *CXStringSet <cimport> end
+global CXModule = @pointer
+global function clang_Cursor_getModule(a0: CXCursor): CXModule <cimport> end
+global function clang_getModuleForFile(a0: CXTranslationUnit, a1: CXFile): CXModule <cimport> end
+global function clang_Module_getASTFile(a0: CXModule): CXFile <cimport> end
+global function clang_Module_getParent(a0: CXModule): CXModule <cimport> end
+global function clang_Module_getName(a0: CXModule): CXString <cimport> end
+global function clang_Module_getFullName(a0: CXModule): CXString <cimport> end
+global function clang_Module_isSystem(a0: CXModule): cint <cimport> end
+global function clang_Module_getNumTopLevelHeaders(a0: CXTranslationUnit, a1: CXModule): cuint <cimport> end
+global function clang_Module_getTopLevelHeader(a0: CXTranslationUnit, a1: CXModule, a2: cuint): CXFile <cimport> end
+global function clang_CXXConstructor_isConvertingConstructor(a0: CXCursor): cuint <cimport> end
+global function clang_CXXConstructor_isCopyConstructor(a0: CXCursor): cuint <cimport> end
+global function clang_CXXConstructor_isDefaultConstructor(a0: CXCursor): cuint <cimport> end
+global function clang_CXXConstructor_isMoveConstructor(a0: CXCursor): cuint <cimport> end
+global function clang_CXXField_isMutable(a0: CXCursor): cuint <cimport> end
+global function clang_CXXMethod_isDefaulted(a0: CXCursor): cuint <cimport> end
+global function clang_CXXMethod_isPureVirtual(a0: CXCursor): cuint <cimport> end
+global function clang_CXXMethod_isStatic(a0: CXCursor): cuint <cimport> end
+global function clang_CXXMethod_isVirtual(a0: CXCursor): cuint <cimport> end
+global function clang_CXXRecord_isAbstract(a0: CXCursor): cuint <cimport> end
+global function clang_EnumDecl_isScoped(a0: CXCursor): cuint <cimport> end
+global function clang_CXXMethod_isConst(a0: CXCursor): cuint <cimport> end
+global function clang_getTemplateCursorKind(a0: CXCursor): CXCursorKind <cimport> end
+global function clang_getSpecializedCursorTemplate(a0: CXCursor): CXCursor <cimport> end
+global function clang_getCursorReferenceNameRange(a0: CXCursor, a1: cuint, a2: cuint): CXSourceRange <cimport> end
+global CXNameRefFlags = @enum {
+	WantQualifier = 1,
+	WantTemplateArgs = 2,
+	WantSinglePiece = 4
+}
+global CXTokenKind = @enum {
+	Punctuation = 0,
+	Keyword = 1,
+	Identifier = 2,
+	Literal = 3,
+	Comment = 4
+}
+global CXToken = @record {
+	int_data: [4]cuint,
+	ptr_data: pointer
+}
+
+global function clang_getToken(a0: CXTranslationUnit, a1: CXSourceLocation): *CXToken <cimport> end
+global function clang_getTokenKind(a0: CXToken): CXTokenKind <cimport> end
+global function clang_getTokenSpelling(a0: CXTranslationUnit, a1: CXToken): CXString <cimport> end
+global function clang_getTokenLocation(a0: CXTranslationUnit, a1: CXToken): CXSourceLocation <cimport> end
+global function clang_getTokenExtent(a0: CXTranslationUnit, a1: CXToken): CXSourceRange <cimport> end
+global function clang_tokenize(a0: CXTranslationUnit, a1: CXSourceRange, a2: **CXToken, a3: *cuint) <cimport> end
+global function clang_annotateTokens(a0: CXTranslationUnit, a1: *CXToken, a2: cuint, a3: *CXCursor) <cimport> end
+global function clang_disposeTokens(a0: CXTranslationUnit, a1: *CXToken, a2: cuint) <cimport> end
+global function clang_getCursorKindSpelling(a0: CXCursorKind): CXString <cimport> end
+global function clang_getDefinitionSpellingAndExtent(a0: CXCursor, a1: *cstring, a2: *cstring, a3: *cuint, a4: *cuint, a5: *cuint, a6: *cuint) <cimport> end
+global function clang_enableStackTraces() <cimport> end
+global function clang_executeOnThread(a0: function(a0: pointer), a1: pointer, a2: cuint) <cimport> end
+global CXCompletionString = @pointer
+global CXCompletionResult = @record {
+	CursorKind: CXCursorKind,
+	CompletionString: CXCompletionString
+}
+
+global CXCompletionChunkKind = @enum {
+	Optional = 0,
+	TypedText = 1,
+	Text = 2,
+	Placeholder = 3,
+	Informative = 4,
+	CurrentParameter = 5,
+	LeftParen = 6,
+	RightParen = 7,
+	LeftBracket = 8,
+	RightBracket = 9,
+	LeftBrace = 10,
+	RightBrace = 11,
+	LeftAngle = 12,
+	RightAngle = 13,
+	Comma = 14,
+	ResultType = 15,
+	Colon = 16,
+	SemiColon = 17,
+	Equal = 18,
+	HorizontalSpace = 19,
+	VerticalSpace = 20
+}
+global function clang_getCompletionChunkKind(a0: CXCompletionString, a1: cuint): CXCompletionChunkKind <cimport> end
+global function clang_getCompletionChunkText(a0: CXCompletionString, a1: cuint): CXString <cimport> end
+global function clang_getCompletionChunkCompletionString(a0: CXCompletionString, a1: cuint): CXCompletionString <cimport> end
+global function clang_getNumCompletionChunks(a0: CXCompletionString): cuint <cimport> end
+global function clang_getCompletionPriority(a0: CXCompletionString): cuint <cimport> end
+global function clang_getCompletionAvailability(a0: CXCompletionString): CXAvailabilityKind <cimport> end
+global function clang_getCompletionNumAnnotations(a0: CXCompletionString): cuint <cimport> end
+global function clang_getCompletionAnnotation(a0: CXCompletionString, a1: cuint): CXString <cimport> end
+global function clang_getCompletionParent(a0: CXCompletionString, a1: *CXCursorKind): CXString <cimport> end
+global function clang_getCompletionBriefComment(a0: CXCompletionString): CXString <cimport> end
+global function clang_getCursorCompletionString(a0: CXCursor): CXCompletionString <cimport> end
+global CXCodeCompleteResults = @record {
+	Results: *CXCompletionResult,
+	NumResults: cuint
+}
+
+global function clang_getCompletionNumFixIts(a0: *CXCodeCompleteResults, a1: cuint): cuint <cimport> end
+global function clang_getCompletionFixIt(a0: *CXCodeCompleteResults, a1: cuint, a2: cuint, a3: *CXSourceRange): CXString <cimport> end
+global CXCodeComplete_Flags = @enum {
+	IncludeMacros = 1,
+	IncludeCodePatterns = 2,
+	IncludeBriefComments = 4,
+	SkipPreamble = 8,
+	IncludeCompletionsWithFixIts = 16
+}
+global CXCompletionContext = @enum {
+	Unexposed = 0,
+	AnyType = 1,
+	AnyValue = 2,
+	ObjCObjectValue = 4,
+	ObjCSelectorValue = 8,
+	CXXClassTypeValue = 16,
+	DotMemberAccess = 32,
+	ArrowMemberAccess = 64,
+	ObjCPropertyAccess = 128,
+	EnumTag = 256,
+	UnionTag = 512,
+	StructTag = 1024,
+	ClassTag = 2048,
+	Namespace = 4096,
+	NestedNameSpecifier = 8192,
+	ObjCInterface = 16384,
+	ObjCProtocol = 32768,
+	ObjCCategory = 65536,
+	ObjCInstanceMessage = 131072,
+	ObjCClassMessage = 262144,
+	ObjCSelectorName = 524288,
+	MacroName = 1048576,
+	NaturalLanguage = 2097152,
+	IncludedFile = 4194304,
+	Unknown = 8388607
+}
+global function clang_defaultCodeCompleteOptions(): cuint <cimport> end
+global function clang_codeCompleteAt(a0: CXTranslationUnit, a1: cstring, a2: cuint, a3: cuint, a4: *CXUnsavedFile, a5: cuint, a6: cuint): *CXCodeCompleteResults <cimport> end
+global function clang_sortCodeCompletionResults(a0: *CXCompletionResult, a1: cuint) <cimport> end
+global function clang_disposeCodeCompleteResults(a0: *CXCodeCompleteResults) <cimport> end
+global function clang_codeCompleteGetNumDiagnostics(a0: *CXCodeCompleteResults): cuint <cimport> end
+global function clang_codeCompleteGetDiagnostic(a0: *CXCodeCompleteResults, a1: cuint): CXDiagnostic <cimport> end
+global function clang_codeCompleteGetContexts(a0: *CXCodeCompleteResults): culong <cimport> end
+global function clang_codeCompleteGetContainerKind(a0: *CXCodeCompleteResults, a1: *cuint): CXCursorKind <cimport> end
+global function clang_codeCompleteGetContainerUSR(a0: *CXCodeCompleteResults): CXString <cimport> end
+global function clang_codeCompleteGetObjCSelector(a0: *CXCodeCompleteResults): CXString <cimport> end
+global function clang_getClangVersion(): CXString <cimport> end
+global function clang_toggleCrashRecovery(a0: cuint) <cimport> end
+global CXInclusionVisitor = @function(a0: *CXSourceLocation, a1: cuint, a2: CXClientData): CXFile
+global function clang_getInclusions(a0: CXTranslationUnit, a1: CXInclusionVisitor, a2: CXClientData) <cimport> end
+global CXEvalResultKind = @enum {
+	Int = 1,
+	Float = 2,
+	ObjCStrLiteral = 3,
+	StrLiteral = 4,
+	CFStr = 5,
+	Other = 6,
+	UnExposed = 0
+}
+global CXEvalResult = @pointer
+global function clang_Cursor_Evaluate(a0: CXCursor): CXEvalResult <cimport> end
+global function clang_EvalResult_getKind(a0: CXEvalResult): CXEvalResultKind <cimport> end
+global function clang_EvalResult_getAsInt(a0: CXEvalResult): cint <cimport> end
+global function clang_EvalResult_getAsLongLong(a0: CXEvalResult): clonglong <cimport> end
+global function clang_EvalResult_isUnsignedInt(a0: CXEvalResult): cuint <cimport> end
+global function clang_EvalResult_getAsUnsigned(a0: CXEvalResult): culong <cimport> end
+global function clang_EvalResult_getAsDouble(a0: CXEvalResult): float64 <cimport> end
+global function clang_EvalResult_getAsStr(a0: CXEvalResult): cstring <cimport> end
+global function clang_EvalResult_dispose(a0: CXEvalResult) <cimport> end
+global CXRemapping = @pointer
+global function clang_getRemappings(a0: cstring): CXRemapping <cimport> end
+global function clang_getRemappingsFromFileList(a0: *cstring, a1: cuint): CXRemapping <cimport> end
+global function clang_remap_getNumFiles(a0: CXRemapping): cuint <cimport> end
+global function clang_remap_getFilenames(a0: CXRemapping, a1: cuint, a2: *CXString, a3: *CXString) <cimport> end
+global function clang_remap_dispose(a0: CXRemapping) <cimport> end
+global CXVisitorResult = @enum {
+	Break = 0,
+	Continue = 1
+}
+global CXCursorAndRangeVisitor = @record {
+	context: pointer,
+	visit: function(a0: pointer, a1: CXCursor, a2: CXSourceRange): CXVisitorResult
+}
+
+global CXResult = @enum {
+	Success = 0,
+	Invalid = 1,
+	VisitBreak = 2
+}
+global function clang_findReferencesInFile(a0: CXCursor, a1: CXFile, a2: CXCursorAndRangeVisitor): CXResult <cimport> end
+global function clang_findIncludesInFile(a0: CXTranslationUnit, a1: CXFile, a2: CXCursorAndRangeVisitor): CXResult <cimport> end
+global CXIdxClientFile = @pointer
+global CXIdxClientEntity = @pointer
+global CXIdxClientContainer = @pointer
+global CXIdxClientASTFile = @pointer
+global CXIdxLoc = @record {
+	ptr_data: [2]pointer,
+	int_data: cuint
+}
+
+global CXIdxIncludedFileInfo = @record {
+	hashLoc: CXIdxLoc,
+	filename: cstring,
+	file: CXFile,
+	isImport: cint,
+	isAngled: cint,
+	isModuleImport: cint
+}
+
+global CXIdxImportedASTFileInfo = @record {
+	file: CXFile,
+	module: CXModule,
+	loc: CXIdxLoc,
+	isImplicit: cint
+}
+
+global CXIdxEntityKind = @enum {
+	Unexposed = 0,
+	Typedef = 1,
+	Function = 2,
+	Variable = 3,
+	Field = 4,
+	EnumConstant = 5,
+	ObjCClass = 6,
+	ObjCProtocol = 7,
+	ObjCCategory = 8,
+	ObjCInstanceMethod = 9,
+	ObjCClassMethod = 10,
+	ObjCProperty = 11,
+	ObjCIvar = 12,
+	Enum = 13,
+	Struct = 14,
+	Union = 15,
+	CXXClass = 16,
+	CXXNamespace = 17,
+	CXXNamespaceAlias = 18,
+	CXXStaticVariable = 19,
+	CXXStaticMethod = 20,
+	CXXInstanceMethod = 21,
+	CXXConstructor = 22,
+	CXXDestructor = 23,
+	CXXConversionFunction = 24,
+	CXXTypeAlias = 25,
+	CXXInterface = 26
+}
+global CXIdxEntityLanguage = @enum {
+	None = 0,
+	C = 1,
+	ObjC = 2,
+	CXX = 3,
+	Swift = 4
+}
+global CXIdxEntityCXXTemplateKind = @enum {
+	NonTemplate = 0,
+	Template = 1,
+	TemplatePartialSpecialization = 2,
+	TemplateSpecialization = 3
+}
+global CXIdxAttrKind = @enum {
+	Unexposed = 0,
+	IBAction = 1,
+	IBOutlet = 2,
+	IBOutletCollection = 3
+}
+global CXIdxAttrInfo = @record {
+	kind: CXIdxAttrKind,
+	cursor: CXCursor,
+	loc: CXIdxLoc
+}
+
+global CXIdxEntityInfo = @record {
+	kind: CXIdxEntityKind,
+	templateKind: CXIdxEntityCXXTemplateKind,
+	lang: CXIdxEntityLanguage,
+	name: cstring,
+	USR: cstring,
+	cursor: CXCursor,
+	attributes: **CXIdxAttrInfo,
+	numAttributes: cuint
+}
+
+global CXIdxContainerInfo = @record {
+	cursor: CXCursor
+}
+
+global CXIdxIBOutletCollectionAttrInfo = @record {
+	attrInfo: *CXIdxAttrInfo,
+	objcClass: *CXIdxEntityInfo,
+	classCursor: CXCursor,
+	classLoc: CXIdxLoc
+}
+
+global CXIdxDeclInfoFlags = @enum {
+	Skipped = 1
+}
+global CXIdxDeclInfo = @record {
+	entityInfo: *CXIdxEntityInfo,
+	cursor: CXCursor,
+	loc: CXIdxLoc,
+	semanticContainer: *CXIdxContainerInfo,
+	lexicalContainer: *CXIdxContainerInfo,
+	isRedeclaration: cint,
+	isDefinition: cint,
+	isContainer: cint,
+	declAsContainer: *CXIdxContainerInfo,
+	isImplicit: cint,
+	attributes: **CXIdxAttrInfo,
+	numAttributes: cuint,
+	flags: cuint
+}
+
+global CXIdxObjCContainerKind = @enum {
+	ForwardRef = 0,
+	Interface = 1,
+	Implementation = 2
+}
+global CXIdxObjCContainerDeclInfo = @record {
+	declInfo: *CXIdxDeclInfo,
+	kind: CXIdxObjCContainerKind
+}
+
+global CXIdxBaseClassInfo = @record {
+	base: *CXIdxEntityInfo,
+	cursor: CXCursor,
+	loc: CXIdxLoc
+}
+
+global CXIdxObjCProtocolRefInfo = @record {
+	protocol: *CXIdxEntityInfo,
+	cursor: CXCursor,
+	loc: CXIdxLoc
+}
+
+global CXIdxObjCProtocolRefListInfo = @record {
+	protocols: **CXIdxObjCProtocolRefInfo,
+	numProtocols: cuint
+}
+
+global CXIdxObjCInterfaceDeclInfo = @record {
+	containerInfo: *CXIdxObjCContainerDeclInfo,
+	superInfo: *CXIdxBaseClassInfo,
+	protocols: *CXIdxObjCProtocolRefListInfo
+}
+
+global CXIdxObjCCategoryDeclInfo = @record {
+	containerInfo: *CXIdxObjCContainerDeclInfo,
+	objcClass: *CXIdxEntityInfo,
+	classCursor: CXCursor,
+	classLoc: CXIdxLoc,
+	protocols: *CXIdxObjCProtocolRefListInfo
+}
+
+global CXIdxObjCPropertyDeclInfo = @record {
+	declInfo: *CXIdxDeclInfo,
+	getter: *CXIdxEntityInfo,
+	setter: *CXIdxEntityInfo
+}
+
+global CXIdxCXXClassDeclInfo = @record {
+	declInfo: *CXIdxDeclInfo,
+	bases: **CXIdxBaseClassInfo,
+	numBases: cuint
+}
+
+global CXIdxEntityRefKind = @enum {
+	Direct = 1,
+	Implicit = 2
+}
+global CXSymbolRole = @enum {
+	None = 0,
+	Declaration = 1,
+	Definition = 2,
+	Reference = 4,
+	Read = 8,
+	Write = 16,
+	Call = 32,
+	Dynamic = 64,
+	AddressOf = 128,
+	Implicit = 256
+}
+global CXIdxEntityRefInfo = @record {
+	kind: CXIdxEntityRefKind,
+	cursor: CXCursor,
+	loc: CXIdxLoc,
+	referencedEntity: *CXIdxEntityInfo,
+	parentEntity: *CXIdxEntityInfo,
+	container: *CXIdxContainerInfo,
+	role: CXSymbolRole
+}
+
+global IndexerCallbacks = @record {
+	abortQuery: function(a0: CXClientData, a1: pointer): cint,
+	diagnostic: function(a0: CXClientData, a1: CXDiagnosticSet, a2: pointer),
+	enteredMainFile: function(a0: CXClientData, a1: CXFile, a2: pointer): CXIdxClientFile,
+	ppIncludedFile: function(a0: CXClientData, a1: *CXIdxIncludedFileInfo): CXIdxClientFile,
+	importedASTFile: function(a0: CXClientData, a1: *CXIdxImportedASTFileInfo): CXIdxClientASTFile,
+	startedTranslationUnit: function(a0: CXClientData, a1: pointer): CXIdxClientContainer,
+	indexDeclaration: function(a0: CXClientData, a1: *CXIdxDeclInfo),
+	indexEntityReference: function(a0: CXClientData, a1: *CXIdxEntityRefInfo)
+}
+
+global function clang_index_isEntityObjCContainerKind(a0: CXIdxEntityKind): cint <cimport> end
+global function clang_index_getObjCContainerDeclInfo(a0: *CXIdxDeclInfo): *CXIdxObjCContainerDeclInfo <cimport> end
+global function clang_index_getObjCInterfaceDeclInfo(a0: *CXIdxDeclInfo): *CXIdxObjCInterfaceDeclInfo <cimport> end
+global function clang_index_getObjCCategoryDeclInfo(a0: *CXIdxDeclInfo): *CXIdxObjCCategoryDeclInfo <cimport> end
+global function clang_index_getObjCProtocolRefListInfo(a0: *CXIdxDeclInfo): *CXIdxObjCProtocolRefListInfo <cimport> end
+global function clang_index_getObjCPropertyDeclInfo(a0: *CXIdxDeclInfo): *CXIdxObjCPropertyDeclInfo <cimport> end
+global function clang_index_getIBOutletCollectionAttrInfo(a0: *CXIdxAttrInfo): *CXIdxIBOutletCollectionAttrInfo <cimport> end
+global function clang_index_getCXXClassDeclInfo(a0: *CXIdxDeclInfo): *CXIdxCXXClassDeclInfo <cimport> end
+global function clang_index_getClientContainer(a0: *CXIdxContainerInfo): CXIdxClientContainer <cimport> end
+global function clang_index_setClientContainer(a0: *CXIdxContainerInfo, a1: CXIdxClientContainer) <cimport> end
+global function clang_index_getClientEntity(a0: *CXIdxEntityInfo): CXIdxClientEntity <cimport> end
+global function clang_index_setClientEntity(a0: *CXIdxEntityInfo, a1: CXIdxClientEntity) <cimport> end
+global CXIndexAction = @pointer
+global function clang_IndexAction_create(a0: CXIndex): CXIndexAction <cimport> end
+global function clang_IndexAction_dispose(a0: CXIndexAction) <cimport> end
+global CXIndexOptFlags = @enum {
+	None = 0,
+	SuppressRedundantRefs = 1,
+	IndexFunctionLocalSymbols = 2,
+	IndexImplicitTemplateInstantiations = 4,
+	SuppressWarnings = 8,
+	SkipParsedBodiesInSession = 16
+}
+global function clang_indexSourceFile(a0: CXIndexAction, a1: CXClientData, a2: *IndexerCallbacks, a3: cuint, a4: cuint, a5: cstring, a6: *cstring, a7: cint, a8: *CXUnsavedFile, a9: cuint, a10: *CXTranslationUnit, a11: cuint): cint <cimport> end
+global function clang_indexSourceFileFullArgv(a0: CXIndexAction, a1: CXClientData, a2: *IndexerCallbacks, a3: cuint, a4: cuint, a5: cstring, a6: *cstring, a7: cint, a8: *CXUnsavedFile, a9: cuint, a10: *CXTranslationUnit, a11: cuint): cint <cimport> end
+global function clang_indexTranslationUnit(a0: CXIndexAction, a1: CXClientData, a2: *IndexerCallbacks, a3: cuint, a4: cuint, a5: CXTranslationUnit): cint <cimport> end
+global function clang_indexLoc_getFileLocation(a0: CXIdxLoc, a1: *CXIdxClientFile, a2: *CXFile, a3: *cuint, a4: *cuint, a5: *cuint) <cimport> end
+global function clang_indexLoc_getCXSourceLocation(a0: CXIdxLoc): CXSourceLocation <cimport> end
+global CXFieldVisitor = @function(a0: CXCursor, a1: CXClientData): CXVisitorResult
+global function clang_Type_visitFields(a0: CXType, a1: CXFieldVisitor, a2: CXClientData): cuint <cimport> end

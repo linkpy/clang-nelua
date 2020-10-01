@@ -1,3 +1,4 @@
 nelua_cache
 ppm_cache
 .neluacfg.*
+!.neluacfg.clang.lua

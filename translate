@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd "$(dirname '$0')"
+
+python3 python/translate.py > sources/clang/clang-c.nelua
